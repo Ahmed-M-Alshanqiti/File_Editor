@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Conversion Result{% endblock %}
+
+{% block content %}
+<h2 class="text-xl font-semibold mb-4">File Converted</h2>
+
+<p>Original: <strong>{{ original_name }}</strong></p>
+<p>Converted File: <a href="{{ converted_url }}" class="text-blue-600 underline">Download PDF</a></p>
+{% endblock %}

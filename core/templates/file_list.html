@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}My Files{% endblock %}
+
+{% block content %}
+<h2 class="text-xl font-semibold mb-4">Your Files</h2>
+
+<table class="w-full bg-white shadow rounded">
+    <thead>
+        <tr class="border-b bg-gray-50">
+            <th class="p-2">File Name</th>
+            <th class="p-2">Uploaded At</th>
+            <th class="p-2">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for file in files %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="p-2">{{ file.filename }}</td>
+                <td class="p-2">{{ file.uploaded_at }}</td>
+                <td class="p-2 space-x-2">
+                    <a href="{% url 'file_detail' file.id %}" class="text-blue-600">View</a>
+                    <a href="{% url 'convert_to_pdf' file.id %}" class="text-green-600">Convert to PDF</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" class="text-center p-4 text-gray-500">No files uploaded yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
