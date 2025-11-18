@@ -66,22 +66,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Configure Environment Variables
 
-Create a `.env` file in the project root:
-
-```env
-SECRET_KEY=your-secret-key-here
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-
-# Database (if using PostgreSQL)
-DB_NAME=file_editor_db
-DB_USER=your_db_user
-DB_PASSWORD=your_db_password
-DB_HOST=localhost
-DB_PORT=5432
-```
 
 ### 5. Set Up Static Files
 
@@ -294,42 +279,10 @@ python manage.py collectstatic
 
 No additional setup required. Django will create `db.sqlite3` automatically.
 
-### Using PostgreSQL (Recommended for Production)
 
-1. **Install PostgreSQL and create database:**
 
-```bash
-# Install PostgreSQL
-sudo apt-get install postgresql postgresql-contrib
 
-# Create database
-sudo -u postgres psql
-CREATE DATABASE file_editor_db;
-CREATE USER your_user WITH PASSWORD 'your_password';
-GRANT ALL PRIVILEGES ON DATABASE file_editor_db TO your_user;
-\q
-```
 
-2. **Update settings.py:**
-
-```python
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME', 'file_editor_db'),
-        'USER': os.environ.get('DB_USER', 'your_user'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'your_password'),
-        'HOST': os.environ.get('DB_HOST', 'localhost'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
-    }
-}
-```
-
-3. **Install PostgreSQL adapter:**
-
-```bash
-pip install psycopg2-binary
-```
 
 ### Run Migrations
 
@@ -407,161 +360,8 @@ DELETE /files/delete/<int:id>/  - Delete file
 POST /files/rename/<int:id>/    - Rename file
 ```
 
-### User Authentication
 
-```
-GET  /accounts/login/           - Login page
-POST /accounts/login/           - Login submission
-GET  /accounts/register/        - Registration page
-POST /accounts/register/        - Registration submission
-GET  /accounts/logout/          - Logout
-GET  /accounts/profile/         - User profile
-```
 
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**1. PDF.js not loading:**
-
-```
-Error: Cannot find pdf.worker.js
-
-Solution: Ensure pdf.worker.js path is correctly set:
-pdfjsLib.GlobalWorkerOptions.workerSrc = "{% static 'pdf.js/pdf.worker.js' %}";
-```
-
-**2. Static files not found (404):**
-
-```
-Solution: 
-1. Run: python manage.py collectstatic
-2. Check STATIC_URL and STATIC_ROOT in settings.py
-3. Ensure static files are in correct directory
-4. In development, set DEBUG=True
-```
-
-**3. File upload fails:**
-
-```
-Solution:
-1. Check DATA_UPLOAD_MAX_MEMORY_SIZE in settings.py
-2. Ensure MEDIA_ROOT directory exists and has write permissions
-3. Check disk space
-```
-
-**4. Database migration errors:**
-
-```
-Solution:
-1. Delete all migration files except __init__.py
-2. Delete db.sqlite3
-3. Run: python manage.py makemigrations
-4. Run: python manage.py migrate
-```
-
-**5. Permission denied on media folder:**
-
-```bash
-# Linux/Mac
-sudo chmod -R 755 media/
-sudo chown -R $USER:$USER media/
-
-# Windows - Run as Administrator
-icacls media /grant Everyone:F /T
-```
-
-### Debug Mode
-
-Enable detailed error messages in development:
-
-```python
-# settings.py
-DEBUG = True
-ALLOWED_HOSTS = ['*']  # Only for development!
-```
-
-## 🚢 Deployment
-
-### Preparing for Production
-
-1. **Update settings.py:**
-
-```python
-DEBUG = False
-ALLOWED_HOSTS = ['yourdomain.com', 'www.yourdomain.com']
-SECRET_KEY = os.environ.get('SECRET_KEY')
-```
-
-2. **Install WhiteNoise for static files:**
-
-```bash
-pip install whitenoise
-```
-
-Add to `settings.py`:
-
-```python
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add this
-    # ... other middleware
-]
-
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-```
-
-3. **Collect static files:**
-
-```bash
-python manage.py collectstatic --noinput
-```
-
-4. **Security settings:**
-
-```python
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-X_FRAME_OPTIONS = 'DENY'
-```
-
-### Deployment Options
-
-- **Heroku**: Use Procfile and configure buildpacks
-- **AWS**: Use Elastic Beanstalk or EC2 with nginx
-- **DigitalOcean**: Deploy on App Platform or Droplet
-- **Railway**: Simple deployment with GitHub integration
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these guidelines:
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/YourFeature`
-3. Commit changes: `git commit -m 'Add YourFeature'`
-4. Push to branch: `git push origin feature/YourFeature`
-5. Submit a Pull Request
-
-### Coding Standards
-
-- Follow PEP 8 style guide for Python code
-- Use Django best practices
-- Write docstrings for functions and classes
-- Add comments for complex logic
-- Write unit tests for new features
-
-### Running Tests
-
-```bash
-python manage.py test
-```
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 👤 Author
 
@@ -570,24 +370,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - GitHub: [@Ahmed-M-Alshanqiti](https://github.com/Ahmed-M-Alshanqiti)
 - Repository: [File_Editor](https://github.com/Ahmed-M-Alshanqiti/File_Editor)
 
-## 🙏 Acknowledgments
-
-- [Django](https://www.djangoproject.com/) - The web framework for perfectionists with deadlines
-- [PDF.js](https://mozilla.github.io/pdf.js/) - Mozilla's PDF rendering library
-- [Bootstrap](https://getbootstrap.com/) - Frontend framework
-- The Django community for excellent documentation and support
-
-## 📞 Support
-
-For issues, questions, or contributions:
-
-1. Check the [Troubleshooting](#troubleshooting) section
-2. Search [existing issues](https://github.com/Ahmed-M-Alshanqiti/File_Editor/issues)
-3. Open a new issue with detailed information
-
-## 🔐 Security
-
-If you discover a security vulnerability, please email directly instead of using the issue tracker.
 
 ---
 
