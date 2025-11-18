@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold">Notifications</h1>
+      <p class="text-sm text-gray-500">Track file submissions, approvals, and review updates.</p>
+    </div>
+    <form method="post" class="inline-flex items-center gap-2">
+      {% csrf_token %}
+      <button type="submit" class="px-4 py-2 text-sm bg-slate-100 text-slate-800 rounded-md hover:bg-slate-200">
+        Mark all as read
+      </button>
+    </form>
+  </div>
+
+  <div class="bg-white rounded-lg shadow border divide-y">
+    {% for notification in notifications %}
+      <div class="p-4 flex items-start gap-4 {% if not notification.is_read %}bg-slate-50{% endif %}">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs uppercase tracking-wide px-2 py-1 rounded-full bg-indigo-50 text-indigo-700">
+              {{ notification.get_notification_type_display }}
+            </span>
+            <span class="text-xs text-gray-400">{{ notification.created_at|date:"Y-m-d H:i" }}</span>
+            {% if notification.sender %}
+              <span class="text-xs text-gray-500">by {{ notification.sender.username }}</span>
+            {% endif %}
+            {% if notification.related_file %}
+              <a href="{% url 'file_detail' notification.related_file.id %}" class="text-xs text-indigo-600 hover:underline">
+                View file
+              </a>
+            {% endif %}
+          </div>
+          <p class="mt-2 text-sm text-gray-800">{{ notification.message }}</p>
+        </div>
+        {% if not notification.is_read %}
+          <form method="post" action="{% url 'notification_mark_read' notification.id %}">
+            {% csrf_token %}
+            <button class="text-xs text-indigo-600 hover:underline">Mark read</button>
+          </form>
+        {% endif %}
+      </div>
+    {% empty %}
+      <div class="p-6 text-center text-gray-500">
+        No notifications yet.
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+

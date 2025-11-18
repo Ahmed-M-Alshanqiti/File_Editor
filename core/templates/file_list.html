@@ -1,30 +1,65 @@
 {% extends 'base.html' %}
-{% block title %}My Files{% endblock %}
+{% block title %}Files{% endblock %}
 
 {% block content %}
-<h2 class="text-xl font-semibold mb-4">Your Files</h2>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h2 class="text-2xl font-bold">Uploaded Files</h2>
+    <p class="text-sm text-gray-500">All uploaded files are visible to everyone. Owner can edit/delete and add comments.</p>
+  </div>
+  <div>
+    {% if user.is_authenticated and user.profile.role != 'viewer' %}
+      <a href="{% url 'file_upload' %}" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md shadow hover:bg-indigo-700">
+        Upload New
+      </a>
+    {% endif %}
+  </div>
+</div>
 
-<table class="w-full bg-white shadow rounded">
-    <thead>
-        <tr class="border-b bg-gray-50">
-            <th class="p-2">File Name</th>
-            <th class="p-2">Uploaded At</th>
-            <th class="p-2">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for file in files %}
-            <tr class="border-b hover:bg-gray-50">
-                <td class="p-2">{{ file.filename }}</td>
-                <td class="p-2">{{ file.uploaded_at }}</td>
-                <td class="p-2 space-x-2">
-                    <a href="{% url 'file_detail' file.id %}" class="text-blue-600">View</a>
-                    <a href="{% url 'convert_to_pdf' file.id %}" class="text-green-600">Convert to PDF</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="3" class="text-center p-4 text-gray-500">No files uploaded yet.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="grid grid-cols-1 gap-4">
+  {% for file in files %}
+    <div class="bg-white border rounded-lg shadow-sm p-4 flex items-start gap-4">
+      <div class="flex-1">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <a href="{% url 'file_detail' file.id %}" class="text-lg font-semibold text-slate-900 hover:underline">{{ file.filename }}</a>
+            <p class="text-xs text-gray-500 mt-1">Uploaded {{ file.uploaded_at|date:"Y-m-d H:i" }} • Owner: <span class="font-medium text-slate-700">{{ file.owner.username }}</span></p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-700">v{{ file.version_label }}</span>
+            <span class="text-xs uppercase tracking-wide px-2 py-1 rounded-full {% if file.status == FileStatus.APPROVED %}bg-green-50 text-green-700{% elif file.status == FileStatus.IN_REVIEW %}bg-blue-50 text-blue-700{% elif file.status == FileStatus.REJECTED %}bg-red-50 text-red-700{% else %}bg-yellow-50 text-yellow-700{% endif %}">
+              {{ file.get_status_display }}
+            </span>
+            {% if file.converted %}
+              <a href="{% url 'file_detail' file.id %}" class="px-3 py-1 text-sm bg-green-50 text-green-700 rounded-md border">View PDF</a>
+            {% else %}
+              <span class="px-3 py-1 text-sm bg-yellow-50 text-yellow-800 rounded-md border">No PDF</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <p class="text-sm text-gray-600 mt-3 line-clamp-3">File ID: {{ file.id }} — {{ file.filename }}</p>
+
+        <div class="mt-4 flex items-center gap-2">
+          <a href="{% url 'file_detail' file.id %}" class="text-sm text-indigo-600 hover:underline">Open</a>
+
+          {% if user.is_authenticated and user == file.owner %}
+            <a href="{% url 'file_edit' file.id %}" class="text-sm text-slate-700 hover:underline ml-3">Edit</a>
+
+            <form method="post" action="{% url 'file_delete' file.id %}" class="inline-block ml-3">
+              {% csrf_token %}
+              <button type="submit" class="text-sm text-red-600 hover:underline">Delete</button>
+            </form>
+
+            <a href="{% url 'convert_to_pdf' file.id %}" class="ml-3 text-sm text-green-600 hover:underline">Convert</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <div class="bg-white border rounded-lg shadow-sm p-6 text-center text-gray-500">
+      No files uploaded yet. Be the first to upload.
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Users{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+  <div class="bg-white p-4 rounded-lg shadow">
+    <h2 class="text-xl font-semibold">Users</h2>
+    <p class="text-sm text-gray-500 mb-4">Click a user to view their profile and uploads.</p>
+
+    <ul class="divide-y">
+      {% for u in users %}
+        <li class="py-3 flex items-center justify-between">
+          <div>
+            <a href="{% url 'profile_detail' u.id %}" class="text-sm font-medium text-indigo-700 hover:underline">{{ u.username }}</a>
+            <div class="text-xs text-gray-500">Email: {{ u.email|default:"—" }}</div>
+          </div>
+          <div class="text-sm text-gray-400">{{ u.profile.display_name|default:"" }}</div>
+        </li>
+      {% empty %}
+        <li class="py-4 text-gray-500">No users found.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

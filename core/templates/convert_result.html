@@ -2,8 +2,21 @@
 {% block title %}Conversion Result{% endblock %}
 
 {% block content %}
-<h2 class="text-xl font-semibold mb-4">File Converted</h2>
+<h2 class="text-xl font-semibold mb-4">File Converted Successfully</h2>
 
-<p>Original: <strong>{{ original_name }}</strong></p>
-<p>Converted File: <a href="{{ converted_url }}" class="text-blue-600 underline">Download PDF</a></p>
+<p>Original File: <strong>{{ original_name }}</strong></p>
+
+{% if converted_url %}
+    <p>
+        Converted PDF:
+        <a href="{{ converted_url }}" target="_blank" class="text-blue-600 underline">Download / Open</a>
+    </p>
+
+    <div class="mt-6">
+        <h3 class="font-semibold mb-2">Preview:</h3>
+        <iframe src="{{ converted_url }}" width="100%" height="700" frameborder="0"></iframe>
+    </div>
+{% else %}
+    <p class="text-red-600">{{ error }}</p>
+{% endif %}
 {% endblock %}

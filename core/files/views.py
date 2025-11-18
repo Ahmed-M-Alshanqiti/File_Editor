@@ -642,6 +642,49 @@ def update_file_status(request, pk, action):
     return redirect('file_detail', pk=pk)
 
 
+@login_required
+def notifications_list(request):
+    notifications = request.user.notifications.select_related('sender', 'related_file').order_by('-created_at')
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        notification_id = request.POST.get('notification_id')
+
+        if action == 'read_all':
+            count = notifications.filter(is_read=False).update(is_read=True)
+            if count:
+                messages.success(request, f"Marked {count} notification(s) as read.")
+            else:
+                messages.info(request, "No unread notifications.")
+            return redirect('notifications')
+
+        if not notification_id:
+            messages.error(request, "Invalid notification request.")
+            return redirect('notifications')
+
+        notif = get_object_or_404(Notification, pk=notification_id, recipient=request.user)
+
+        if action == 'mark_read':
+            if not notif.is_read:
+                notif.is_read = True
+                notif.save(update_fields=['is_read'])
+            messages.success(request, "Notification marked as read.")
+        elif action == 'mark_unread':
+            if notif.is_read:
+                notif.is_read = False
+                notif.save(update_fields=['is_read'])
+            messages.success(request, "Notification marked as unread.")
+        elif action == 'dismiss':
+            notif.delete()
+            messages.success(request, "Notification dismissed.")
+        else:
+            messages.error(request, "Unknown notification action.")
+
+        return redirect('notifications')
+
+    return render(request, 'notifications.html', {'notifications': notifications})
+
+
 # -------------------------
 # Add comment (separate view)
 # -------------------------

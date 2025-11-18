@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Delete {{ file.filename }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+  <div class="bg-white p-6 rounded-lg shadow">
+    <h2 class="text-xl font-semibold">Delete file</h2>
+    <p class="text-sm text-gray-600 mt-2">Are you sure you want to permanently delete <span class="font-medium">{{ file.filename }}</span>? This will remove the original file, any edited HTML and the converted PDF from the server.</p>
+
+    <div class="mt-6 flex items-center gap-3">
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md">Yes, delete</button>
+      </form>
+      <a href="{% url 'file_detail' file.id %}" class="px-4 py-2 bg-gray-100 rounded-md">Cancel</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

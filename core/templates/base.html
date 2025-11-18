@@ -1,20 +1,83 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}File Manager{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 text-gray-800">
-    <nav class="bg-blue-600 p-4 text-white">
-        <div class="container mx-auto flex justify-between">
-            <h1 class="font-bold">LibreOffice File Manager</h1>
-            <a href="{% url 'file_upload' %}" class="hover:underline">Upload File</a>
-        </div>
-    </nav>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}File Editor{% endblock %} — Django File Editor</title>
 
-    <main class="container mx-auto p-6">
-        {% block content %}{% endblock %}
-    </main>
+  <!-- Tailwind CDN for fast prototyping (replace with compiled CSS for production) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+  <style>
+    /* Small utility to limit very long content in previews */
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body class="min-h-screen bg-gray-50 text-slate-800 antialiased">
+
+  <header class="bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center space-x-4">
+          <a href="{% url 'file_list' %}" class="flex items-center gap-3">
+            <img src="{% static 'favicon.ico' %}" alt="logo" class="h-8 w-8 rounded"/>
+            <div>
+              <h1 class="text-lg font-semibold leading-tight">Django File Editor</h1>
+              <p class="text-xs text-gray-500">Edit, convert & comment — powered by LibreOffice</p>
+            </div>
+          </a>
+        </div>
+
+        <nav class="flex items-center space-x-3">
+          <a href="{% url 'file_upload' %}" class="inline-flex items-center px-3 py-2 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700">Upload</a>
+          <a href="{% url 'user_list' %}" class="text-sm text-slate-600 hover:text-slate-900">Users</a>
+          {% if user.is_authenticated %}
+            <a href="{% url 'notifications' %}" class="relative inline-flex items-center px-3 py-2 text-sm rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50">
+              Notifications
+              {% if notifications_unread_count %}
+                <span class="ml-2 inline-flex items-center justify-center h-5 min-w-[20px] px-2 rounded-full bg-red-500 text-white text-xs font-semibold">
+                  {{ notifications_unread_count }}
+                </span>
+              {% endif %}
+            </a>
+          {% endif %}
+
+          {% if user.is_authenticated %}
+            <a href="{% url 'profile_detail' user.id %}" class="ml-4 text-sm text-slate-700 hover:text-slate-900">Hi, {{ user.username }}</a>
+            <form action="{% url 'admin:logout' %}" method="post" class="inline">
+              {% csrf_token %}
+              <button type="submit" class="ml-3 text-sm text-red-600 hover:underline">
+                Logout
+              </button>
+            </form>           
+            {% else %}
+            <a href="{% url 'admin:login' %}" class="ml-4 text-sm text-slate-700 hover:underline">Login</a>
+          {% endif %}
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <footer class="border-t bg-white">
+    <div class="max-w-7xl mx-auto px-4 py-4 text-sm text-gray-500">
+      © {{ now|date:"Y" }} Django File Editor — Built with TailwindCSS
+    </div>
+  </footer>
+
+  {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Profile: {{ profile_user.username }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="bg-white p-4 rounded-lg shadow">
+    <h2 class="text-lg font-semibold">{{ profile_user.username }}</h2>
+    <p class="text-sm text-gray-500">Display name: {{ profile_user.profile.display_name|default:"—" }}</p>
+    <p class="text-sm text-gray-500 mt-2">Email: {{ profile_user.email|default:"—" }}</p>
+  </div>
+
+  <div class="lg:col-span-2 bg-white p-4 rounded-lg shadow">
+    <h3 class="font-semibold mb-3">Uploaded Files</h3>
+
+    <ul class="divide-y">
+      {% for f in profile_user.uploaded_files.all %}
+        <li class="py-3 flex items-center justify-between">
+          <div>
+            <a href="{% url 'file_detail' f.id %}" class="text-sm text-indigo-700 hover:underline">{{ f.filename }}</a>
+            <div class="text-xs text-gray-400">Uploaded {{ f.uploaded_at|date:"Y-m-d H:i" }}</div>
+          </div>
+          <div class="text-sm text-gray-500">
+            {% if f.converted %}
+              <a href="{% url 'view_pdf' f.id %}" class="px-2 py-1 bg-green-50 text-green-700 rounded">PDF</a>
+            {% else %}
+              <span class="px-2 py-1 bg-yellow-50 text-yellow-700 rounded">No PDF</span>
+            {% endif %}
+          </div>
+        </li>
+      {% empty %}
+        <li class="py-2 text-gray-500">No uploads yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}
