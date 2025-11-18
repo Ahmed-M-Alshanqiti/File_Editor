@@ -61,4 +61,4 @@ core/media
 .coverage
 /htmlcov/
 
-db.sqlite3
+core/db.sqlite3
