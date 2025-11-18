@@ -84,7 +84,7 @@ def notify_users(user_qs, sender, notif_type, message, file_obj):
         )
 
 
-def notify_super_reviewers(file_obj, sender, notif_type, message):
+def notify_super_reviewers(file_obj, sender, notif_type, message,version):
     reviewers = User.objects.filter(profile__role=Profile.Roles.SUPER_REVIEWER, is_active=True)
     notify_users(reviewers, sender, notif_type, message, file_obj)
 

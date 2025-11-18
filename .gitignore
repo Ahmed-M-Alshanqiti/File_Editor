@@ -1,0 +1,62 @@
+### Django and Python ###
+# Byte-compiled files
+*.pyc
+__pycache__/
+*.pyd
+$py.class
+
+# Temporary files
+*.tmp
+
+# Installer logs
+*.log
+
+# Databases
+# SQLite database
+*.sqlite3
+/db.sqlite3
+
+# Virtual environment files
+venv/
+env/
+.venv/
+.env/
+/.venv/
+# IDE/Editor files (VS Code, Pycharm, Sublime Text, etc.)
+.vscode/
+.idea/
+*.sublime-workspace
+*.swp
+
+# Python package installer files
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.eggs/
+
+# Settings and secrets
+# IMPORTANT: Never commit sensitive environment configuration or secrets
+# Use a separate file like .env for local configuration
+.env
+/local_settings.py
+
+# Static and media files
+# Collected static files (often stored in a 'staticfiles' or 'static_root' directory)
+/static_root/
+/staticfiles/
+
+# Uploaded media files
+/media/
+media/
+media
+staticfiles
+/staticfiles/
+staticfiles/
+core/static_root
+core/staticfiles
+core/static
+core/media
+
+# Testing and Coverage
+.coverage
+/htmlcov/

@@ -12,8 +12,6 @@ urlpatterns = [
     path('<int:pk>/comment/', views.add_comment, name='add_comment'),
     path('<int:pk>/convert/', views.convert_to_pdf, name='convert_to_pdf'),
     path('<int:pk>/original/', views.download_original, name='download_original'),
-    
-    # PDF serving endpoints
     path('<int:pk>/view-pdf/', views.view_pdf, name='view_pdf'),  # ✅ NEW: For PDF.js viewer
     path('<int:pk>/download-pdf/', views.download_pdf, name='download_pdf'),  # ✅ Renamed for clarity
     path('<int:pk>/status/<str:action>/', views.update_file_status, name='update_file_status'),
