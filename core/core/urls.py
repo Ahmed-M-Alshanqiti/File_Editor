@@ -13,7 +13,7 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('admin/', admin.site.urls),
     path("admin/logout/", auth_views.LogoutView.as_view(), name="logout"),
-
+    path('api/', include('api.urls'))
     
 ]
 
